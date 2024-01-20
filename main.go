@@ -82,7 +82,7 @@ func handlerDeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	users := getAllUsers()
 
-	var index int = -1
+	var index int 
 
 	for i, user := range users {
 		if user.ID == userID {
