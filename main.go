@@ -79,9 +79,7 @@ func handlerDeleteUser(w http.ResponseWriter, r *http.Request) {
 	variables := mux.Vars(r)
 	userID, err := strconv.Atoi(variables["id"])
 	checkError(err)
-
-	users := getAllUsers()
-
+	
 	var index int 
 
 	for i, user := range users {
@@ -114,38 +112,22 @@ func handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func handlerUpdateUser(w http.ResponseWriter, r *http.Request) {
-	variable := mux.Vars(r)
-	userID, err := strconv.Atoi(variable["id"])
+	variables := mux.Vars(r)
+	userID, err := strconv.Atoi(variables["id"])
 	checkError(err)
 
-	var targetUser User
-
-	for _, user := range users {
-		if user.ID == userID {
-			targetUser = user
-			break
-		}
-	}
-
-	err2 := json.NewDecoder(r.Body).Decode(&targetUser)
+	var updatedUser User
+	err2 := json.NewDecoder(r.Body).Decode(&updatedUser)
 	checkError(err2)
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(targetUser)
 
-	users[userID-1] = targetUser
+	users[userID] = updatedUser
+	data, err3 := json.Marshal(users[userID])
+	checkError(err3)
+	fmt.Fprintf(w, string(data))
 }
 
 func checkError(err error) {
 	if err != nil {
 		fmt.Println("HATA!", err.Error())
 	}
-}
-
-func getAllUsers() []User {
-	message := []User{
-		User{1, "Emre", "Öney", 24},
-		User{2, "Yusuf", "Öney", 29},
-		User{3, "Burak", "Öney", 25},
-	}
-	return message
 }
